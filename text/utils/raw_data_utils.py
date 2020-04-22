@@ -164,6 +164,8 @@ class IMDbProcessor(DataProcessor):
 
 
 class TextClassProcessor(DataProcessor):
+  def __init__(self):
+    self.has_title = False
 
   def get_train_examples(self, raw_data_dir):
     """See base class."""
@@ -221,6 +223,18 @@ class TextClassProcessor(DataProcessor):
       examples.append(
           InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
     return examples
+
+  def get_train_size(self):
+    return 40
+
+  def get_dev_size(self):
+    return 20
+
+  def get_labels(self):
+    """See base class."""
+    return ["Text"]
+
+
 
 
 class YELP2Processor(TextClassProcessor):
@@ -345,6 +359,7 @@ def get_processor(task_name):
   task_name = task_name.lower()
   processors = {
       "imdb": IMDbProcessor,
+      "text": TextClassProcessor,
       "dbpedia": DBPediaProcessor,
       "yelp-2": YELP2Processor,
       "yelp-5": YELP5Processor,
