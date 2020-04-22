@@ -276,7 +276,7 @@ class BewgleProcessor(DataProcessor):
       if set_type != "unsup_in" and line[1] == "unsup" and len(line[0]) < 500:
         # tf.logging.info("skipping short samples:{:s}".format(line[0]))
         continue
-      guid = "%s-%s" % (set_type, line[2])
+      guid = "%s-%s" % (set_type, line[2] if set_type != "unsup_in" else str(i))
       text_a = line[0]
       label = "unsup" if set_type == "unsup_in" else line[1] 
       text_a = clean_web_text(text_a)
