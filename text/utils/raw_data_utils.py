@@ -273,7 +273,7 @@ class BewgleProcessor(DataProcessor):
         continue
       if skip_unsup and line[1] == "unsup":
         continue
-      if line[1] == "unsup" and len(line[0]) < 500:
+      if set_type != "unsup_in" and line[1] == "unsup" and len(line[0]) < 500:
         # tf.logging.info("skipping short samples:{:s}".format(line[0]))
         continue
       guid = "%s-%s" % (set_type, line[2])
