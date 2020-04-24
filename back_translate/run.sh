@@ -62,11 +62,11 @@ t2t-decoder \
   --hparams_set=transformer_big \
   --hparams="sampling_method=random,sampling_temp=${sampling_temp}" \
   --decode_hparams="beam_size=1,batch_size=16" \
-  --checkpoint_path=gs://bewgle-data/checkpoints/enfr/model.ckpt-500000 \
+  --checkpoint_path=gs://bewgle-data/enfr/model.ckpt-500000 \
   --output_dir=gs://bewgle-data/tmp/t2t \
   --decode_from_file=${forward_src_dir}/${INPUT_FILE}_split.txt \
   --decode_to_file=${forward_gen_dir}/${INPUT_FILE}_split.txt \
-  --data_dir=gs://bewgle-data/checkpoints \
+  --data_dir=gs://bewgle-data/ \
   --cloud_tpu_name=$TPU_NAME \
   --use_tpu
 
@@ -77,11 +77,11 @@ t2t-decoder \
   --hparams_set=transformer_big \
   --hparams="sampling_method=random,sampling_temp=${sampling_temp}" \
   --decode_hparams="beam_size=1,batch_size=16,alpha=0" \
-  --checkpoint_path=gs://bewgle-data/checkpoints/fren/model.ckpt-500000 \
+  --checkpoint_path=gs://bewgle-data/fren/model.ckpt-500000 \
   --output_dir=/tmp/t2t \
   --decode_from_file=${forward_gen_dir}/${INPUT_FILE}_split.txt \
   --decode_to_file=${backward_gen_dir}/${INPUT_FILE}_split.txt \
-  --data_dir=gs://bewgle-data/checkpoints \
+  --data_dir=gs://bewgle-data/ \
   --cloud_tpu_name=$TPU_NAME \
   --use_tpu
 
