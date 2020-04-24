@@ -43,7 +43,7 @@ forward_gen_dir=${data_dir}/forward_gen
 backward_gen_dir=${data_dir}/backward_gen
 para_dir=${data_dir}/paraphrase
 
-gsutil -m rsync checkpoints gs://bewgle-data/
+gsutil -o GSUtil:parallel_composite_upload_threshold=150M -m rsync -r checkpoints gs://bewgle-data/
 gsutil -m cp ${INPUT_FILE} gs://bewgle-data/
 gsutil -m cp ${INPUT_FILE}_split.txt ${forward_src_dir}/
 gsutil -m cp ${INPUT_FILE}_doclen.json ${forward_src_dir}/
