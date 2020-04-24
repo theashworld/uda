@@ -89,7 +89,7 @@ gsutil -m rsync ${backward_gen_dir}/ .
 
 echo "*** transform sentences back into paragraphs***"
 python sent_to_paragraph.py \
-  --input_file=${backward_gen_dir}/file_${worker_id}_of_${replicas}.txt \
-  --doc_len_file=${doc_len_dir}/doc_len_${worker_id}_of_${replicas}.json \
-  --output_file=${para_dir}/file_${worker_id}_of_${replicas}.json
+  --input_file=${INPUT_FILE}_split.txt \
+  --doc_len_file=${INPUT_FILE}_doclen.json \
+  --output_file=${INPUT_FILE}_out
 
