@@ -14,19 +14,19 @@
 # limitations under the License.
 #!/bin/bash
 
-'''
-replicas: An argument for parallel preprocessing. For example, when replicas=3,
-we divide the data into three parts, and only process one part
-according to the worker_id.
-'''
-replicas=1
-worker_id=0
 
 '''
 input_file: The file to be back translated. We assume that each paragraph is in
 a separate line
 '''
-input_file=example_file.txt
+echo "*** spliting paragraph ***"
+# install nltk
+python split_paragraphs.py \
+  --input_file=${INPUT_FILE} \
+  --output_file=${INPUT_FILE}_split.txt \
+  --doc_len_file=${INPUT_FILE}_doclen.json
+
+input_file=gs://bewgle-data/${INPUT_FILE}
 
 '''
 sampling_temp: The sampling temperature for translation. See README.md for more
@@ -36,28 +36,24 @@ sampling_temp=0.8
 
 
 # Dirs
-data_dir=back_trans_data
+data_dir=gs://bewgle-data/back_trans_data
 doc_len_dir=${data_dir}/doc_len
 forward_src_dir=${data_dir}/forward_src
 forward_gen_dir=${data_dir}/forward_gen
 backward_gen_dir=${data_dir}/backward_gen
 para_dir=${data_dir}/paraphrase
 
-mkdir -p ${data_dir}
-mkdir -p ${forward_src_dir}
-mkdir -p ${forward_gen_dir}
-mkdir -p ${backward_gen_dir}
-mkdir -p ${doc_len_dir}
-mkdir -p ${para_dir}
+gsutil -m rsync checkpoints gs://bewgle-data/
+gsutil -m cp ${INPUT_FILE} gs://bewgle-data/
+gsutil -m cp ${INPUT_FILE}_split.txt ${forward_src_dir}/
+gsutil -m cp ${INPUT_FILE}_doclen.json ${forward_src_dir}/
 
-echo "*** spliting paragraph ***"
-# install nltk
-python split_paragraphs.py \
-  --input_file=${input_file} \
-  --output_file=${forward_src_dir}/file_${worker_id}_of_${replicas}.txt \
-  --doc_len_file=${doc_len_dir}/doc_len_${worker_id}_of_${replicas}.json \
-  --replicas=${replicas} \
-  --worker_id=${worker_id} \
+#mkdir -p ${data_dir}
+#mkdir -p ${forward_src_dir}
+#mkdir -p ${forward_gen_dir}
+#mkdir -p ${backward_gen_dir}
+#mkdir -p ${doc_len_dir}
+#mkdir -p ${para_dir}
 
 echo "*** forward translation ***"
 t2t-decoder \
@@ -66,11 +62,11 @@ t2t-decoder \
   --hparams_set=transformer_big \
   --hparams="sampling_method=random,sampling_temp=${sampling_temp}" \
   --decode_hparams="beam_size=1,batch_size=16" \
-  --checkpoint_path=checkpoints/enfr/model.ckpt-500000 \
-  --output_dir=/tmp/t2t \
-  --decode_from_file=${forward_src_dir}/file_${worker_id}_of_${replicas}.txt \
-  --decode_to_file=${forward_gen_dir}/file_${worker_id}_of_${replicas}.txt \
-  --data_dir=checkpoints \
+  --checkpoint_path=gs://bewgle-data/checkpoints/enfr/model.ckpt-500000 \
+  --output_dir=gs://bewgle-data/tmp/t2t \
+  --decode_from_file=${forward_src_dir}/${INPUT_FILE}_split.txt \
+  --decode_to_file=${forward_gen_dir}/${INPUT_FILE}_split.txt \
+  --data_dir=gs://bewgle-data/checkpoints \
   --cloud_tpu_name=$TPU_NAME \
   --use_tpu
 
@@ -81,13 +77,15 @@ t2t-decoder \
   --hparams_set=transformer_big \
   --hparams="sampling_method=random,sampling_temp=${sampling_temp}" \
   --decode_hparams="beam_size=1,batch_size=16,alpha=0" \
-  --checkpoint_path=checkpoints/fren/model.ckpt-500000 \
+  --checkpoint_path=gs://bewgle-data/checkpoints/fren/model.ckpt-500000 \
   --output_dir=/tmp/t2t \
-  --decode_from_file=${forward_gen_dir}/file_${worker_id}_of_${replicas}.txt \
-  --decode_to_file=${backward_gen_dir}/file_${worker_id}_of_${replicas}.txt \
-  --data_dir=checkpoints \
+  --decode_from_file=${forward_gen_dir}/${INPUT_FILE}_split.txt \
+  --decode_to_file=${backward_gen_dir}/${INPUT_FILE}_split.txt \
+  --data_dir=gs://bewgle-data/checkpoints \
   --cloud_tpu_name=$TPU_NAME \
   --use_tpu
+
+gsutil -m rsync ${backward_gen_dir}/ .
 
 echo "*** transform sentences back into paragraphs***"
 python sent_to_paragraph.py \
