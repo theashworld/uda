@@ -151,7 +151,7 @@ flags.DEFINE_integer(
     "save_checkpoints_num", 20,
     help="How many checkpoints we save in training.")
 flags.DEFINE_integer(
-    "iterations_per_loop", 200,
+    "iterations_per_loop", 500,
     help="How many steps to make in each estimator call.")
 flags.DEFINE_integer(
     "num_train_steps", None,
