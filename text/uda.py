@@ -374,8 +374,14 @@ def model_fn_builder(
           loss=total_loss,
           eval_metrics=eval_metrics,
           scaffold_fn=scaffold_fn)
+    elif mode == tf.estimator.ModeKeys.PREDICT:
+      output_spec = tf.contrib.tpu.TPUEstimatorSpec(
+        mode=mode,
+        predictions={
+            'predictions': predictions
+        })
     else:
-      raise ValueError("Only TRAIN and EVAL modes are supported: %s" % (mode))
+      raise ValueError("Only TRAIN, PREDICT and EVAL modes are supported: %s" % (mode))
 
     return output_spec
 
