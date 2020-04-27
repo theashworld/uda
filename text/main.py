@@ -247,7 +247,9 @@ def main(_):
       config=run_config,
       params={"model_dir": FLAGS.model_dir},
       train_batch_size=FLAGS.train_batch_size,
-      eval_batch_size=FLAGS.eval_batch_size)
+      eval_batch_size=FLAGS.eval_batch_size,
+      predict_batch_size=FLAGS.eval_batch_size
+      )
 
   if FLAGS.do_train:
     tf.logging.info("  >>> sup data dir : {}".format(FLAGS.sup_train_data_dir))
