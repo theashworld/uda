@@ -342,8 +342,8 @@ def main(_):
         probabilities = prediction
         tf.logging.info(probabilities)
         output_line = "\t".join(
-            str(class_probability['predictions'])
-            for class_probability in probabilities) + "\n"
+            str(class_probability)
+            for class_probability in probabilities.values()) + "\n"
         writer.write(output_line)
         num_written_lines += 1
 
