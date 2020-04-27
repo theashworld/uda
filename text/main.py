@@ -325,11 +325,12 @@ def main(_):
         tf.logging.info("  %s = %s", key, str(dev_result[key]))
         dev_result[key] = dev_result[key].item()
       best_acc = max(best_acc, dev_result["eval_classify_accuracy"])
+      break # TODO
     tf.logging.info("***** Final evaluation result *****")
     tf.logging.info("Best acc: {:.3f}\n\n".format(best_acc))
     result = estimator.predict(input_fn=eval_input_fn)
 
-    output_predict_file = os.path.join(FLAGS.output_dir, "test_results.tsv")
+    output_predict_file = os.path.join(FLAGS.model_dir, "test_results.tsv")
     with tf.gfile.GFile(output_predict_file, "w") as writer:
       num_written_lines = 0
       tf.logging.info("***** Predict results *****")
