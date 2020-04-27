@@ -311,11 +311,13 @@ def main(_):
     checkpoint_state = tf.train.get_checkpoint_state(FLAGS.model_dir)
 
     best_acc = 0
-    for ckpt_path in checkpoint_state.all_model_checkpoint_paths:
+    for i,ckpt_path in enumerate(checkpoint_state.all_model_checkpoint_paths):
       if not tf.gfile.Exists(ckpt_path + ".data-00000-of-00001"):
         tf.logging.info(
             "Warning: checkpoint {:s} does not exist".format(ckpt_path))
         continue
+      if i != 5:  # TODO
+          continue
       tf.logging.info("Evaluating {:s}".format(ckpt_path))
       dev_result = estimator.evaluate(
           input_fn=eval_input_fn,
