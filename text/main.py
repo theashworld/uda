@@ -292,6 +292,7 @@ def main(_):
         tf.logging.info("  %s = %s", key, str(dev_result[key]))
         dev_result[key] = dev_result[key].item()
       best_acc = max(best_acc, dev_result["eval_classify_accuracy"])
+
     tf.logging.info("***** Final evaluation result *****")
     tf.logging.info("Best acc: {:.3f}\n\n".format(best_acc))
   elif FLAGS.do_train:
@@ -326,6 +327,19 @@ def main(_):
       best_acc = max(best_acc, dev_result["eval_classify_accuracy"])
     tf.logging.info("***** Final evaluation result *****")
     tf.logging.info("Best acc: {:.3f}\n\n".format(best_acc))
+    result = estimator.predict(input_fn=eval_input_fn)
+
+    output_predict_file = os.path.join(FLAGS.output_dir, "test_results.tsv")
+    with tf.gfile.GFile(output_predict_file, "w") as writer:
+      num_written_lines = 0
+      tf.logging.info("***** Predict results *****")
+      for (i, prediction) in enumerate(result):
+        probabilities = prediction["probabilities"]
+        output_line = "\t".join(
+            str(class_probability)
+            for class_probability in probabilities) + "\n"
+        writer.write(output_line)
+        num_written_lines += 1
 
 
 if __name__ == "__main__":
