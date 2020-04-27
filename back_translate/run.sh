@@ -61,14 +61,14 @@ t2t-decoder \
   --model=transformer \
   --hparams_set=transformer_big \
   --hparams="sampling_method=random,sampling_temp=${sampling_temp}" \
-  --decode_hparams="beam_size=1,batch_size=128" \
+  --decode_hparams="beam_size=1,batch_size=1024" \
   --checkpoint_path=gs://bewgle-data/enfr/model.ckpt-500000 \
   --output_dir=gs://bewgle-data/tmp/t2t \
   --decode_from_file=${forward_src_dir}/${INPUT_FILE}_split.txt \
   --decode_to_file=${forward_gen_dir}/${INPUT_FILE}_split.txt \
   --data_dir=gs://bewgle-data/ \
   --cloud_tpu_name=$TPU_NAME \
-  --use_tpu
+  --use_tpu  &> /dev/null
 
 echo "*** backward translation ***"
 t2t-decoder \
@@ -76,14 +76,14 @@ t2t-decoder \
   --model=transformer \
   --hparams_set=transformer_big \
   --hparams="sampling_method=random,sampling_temp=${sampling_temp}" \
-  --decode_hparams="beam_size=1,batch_size=128,alpha=0" \
+  --decode_hparams="beam_size=1,batch_size=1024,alpha=0" \
   --checkpoint_path=gs://bewgle-data/fren/model.ckpt-500000 \
   --output_dir=/tmp/t2t \
   --decode_from_file=${forward_gen_dir}/${INPUT_FILE}_split.txt \
   --decode_to_file=${backward_gen_dir}/${INPUT_FILE}_split.txt \
   --data_dir=gs://bewgle-data/ \
   --cloud_tpu_name=$TPU_NAME \
-  --use_tpu
+  --use_tpu &> /dev/null
 
 gsutil -m rsync ${backward_gen_dir}/ .
 
