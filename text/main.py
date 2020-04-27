@@ -340,6 +340,7 @@ def main(_):
       tf.logging.info("***** Predict results *****")
       for (i, prediction) in enumerate(result):
         probabilities = prediction
+        print(probabilities)
         output_line = "\t".join(
             str(class_probability)
             for class_probability in probabilities) + "\n"
