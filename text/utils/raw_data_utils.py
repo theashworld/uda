@@ -164,9 +164,6 @@ class IMDbProcessor(DataProcessor):
 
 
 class TextClassProcessor(DataProcessor):
-  def __init__(self):
-    self.has_title = False
-
   def get_train_examples(self, raw_data_dir):
     """See base class."""
     examples = self._create_examples(
@@ -214,7 +211,7 @@ class TextClassProcessor(DataProcessor):
         text_a = line[2]
         text_b = line[1]
       else:
-        text_a = line[0]
+        text_a = line[1]
         text_b = None
       label = line[0]
       text_a = clean_web_text(text_a)
@@ -223,72 +220,6 @@ class TextClassProcessor(DataProcessor):
       examples.append(
           InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
     return examples
-
-  def get_train_size(self):
-    return 40
-
-  def get_dev_size(self):
-    return 20
-
-  def get_labels(self):
-    """See base class."""
-    return ["Text"]
-
-
-class BewgleProcessor(DataProcessor):
-  """Processor for the CoLA data set (GLUE version)."""
-
-  def get_train_examples(self, raw_data_dir):
-    """See base class."""
-    return self._create_examples(
-        self._read_tsv(os.path.join(raw_data_dir, "train.csv"),
-                       quotechar='"'), "train")
-
-  def get_dev_examples(self, raw_data_dir):
-    """See base class."""
-    return self._create_examples(
-        self._read_tsv(os.path.join(raw_data_dir, "test.csv"),
-                       quotechar='"'), "test")
-
-  def get_unsup_examples(self, raw_data_dir, unsup_set):
-    """See base class."""
-    if unsup_set == "unsup_ext":
-      return self._create_examples(
-          self._read_tsv(os.path.join(raw_data_dir, "unsup_ext.csv"),
-                         quotechar='"'), "unsup_ext", skip_unsup=False)
-    elif unsup_set == "unsup_in":
-      return self._create_examples(
-          self._read_tsv(os.path.join(raw_data_dir, "Luxury_Beauty_pretrain.txt"),
-                         quotechar='"'), "unsup_in", skip_unsup=False)
-
-  def get_labels(self):
-    """See base class."""
-    return ["pos", "neg"]
-
-  def _create_examples(self, lines, set_type, skip_unsup=True):
-    """Creates examples for the training and dev sets."""
-    examples = []
-    for (i, line) in enumerate(lines):
-      if skip_unsup and line[1] == "unsup":
-        continue
-      if set_type != "unsup_in" and line[1] == "unsup" and len(line[0]) < 500:
-        # tf.logging.info("skipping short samples:{:s}".format(line[0]))
-        continue
-      guid = "%s-%s" % (set_type, line[2] if set_type != "unsup_in" else str(i))
-      text_a = line[0]
-      label = "unsup" if set_type == "unsup_in" else line[1] 
-      text_a = clean_web_text(text_a)
-      examples.append(
-          InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
-    return examples
-
-  def get_train_size(self):
-    return 20
-
-  def get_dev_size(self):
-    return 20
-
-
 
 class YELP2Processor(TextClassProcessor):
 

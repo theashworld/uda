@@ -316,8 +316,6 @@ def main(_):
         tf.logging.info(
             "Warning: checkpoint {:s} does not exist".format(ckpt_path))
         continue
-      if i != 5:  # TODO
-          continue
       tf.logging.info("Evaluating {:s}".format(ckpt_path))
       dev_result = estimator.evaluate(
           input_fn=eval_input_fn,
@@ -329,23 +327,8 @@ def main(_):
         tf.logging.info("  %s = %s", key, str(dev_result[key]))
         dev_result[key] = dev_result[key].item()
       best_acc = max(best_acc, dev_result["eval_classify_accuracy"])
-      break # TODO
     tf.logging.info("***** Final evaluation result *****")
     tf.logging.info("Best acc: {:.3f}\n\n".format(best_acc))
-    result = estimator.predict(input_fn=eval_input_fn)
-
-    output_predict_file = os.path.join(FLAGS.model_dir, "test_results.tsv")
-    with tf.gfile.GFile(output_predict_file, "w") as writer:
-      num_written_lines = 0
-      tf.logging.info("***** Predict results *****")
-      for (i, prediction) in enumerate(result):
-        probabilities = prediction
-        tf.logging.info(probabilities)
-        output_line = "\t".join(
-            str(class_probability)
-            for class_probability in probabilities.values()) + "\n"
-        writer.write(output_line)
-        num_written_lines += 1
 
 
 if __name__ == "__main__":
