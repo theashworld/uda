@@ -343,8 +343,6 @@ def get_processor(task_name):
   task_name = task_name.lower()
   processors = {
       "imdb": IMDbProcessor,
-      "text": TextClassProcessor,
-      "bewgle": BewgleProcessor,
       "dbpedia": DBPediaProcessor,
       "yelp-2": YELP2Processor,
       "yelp-5": YELP5Processor,
