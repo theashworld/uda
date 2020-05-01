@@ -12,10 +12,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-GS_DIR = gs://bewgle-data/UDA-tpu-py3
-gsutil -m rsync -r . $GS_DIR
+GS_DIR=gs://bewgle-data/UDA-tpu-py3
+gsutil -m rsync -r ./data/proc_data/ $GS_DIR/data/proc_data
+gsutil -o GSUtil:parallel_composite_upload_threshold=150M -m rsync -r ./pretrained_models $GS_DIR/pretrained_models
 python main.py \
-  --tpu_name= \
+  --tpu_name=grpc://10.41.186.202:8470 \
   --do_train=True \
   --do_eval=True \
   --sup_train_data_dir=$GS_DIR/data/proc_data/IMDB/train_20 \
@@ -26,7 +27,7 @@ python main.py \
   --init_checkpoint=$GS_DIR/pretrained_models/bert_base/bert_model.ckpt \
   --task_name=IMDB \
   --model_dir=$GS_DIR/ckpt/base_uda \
-  --num_train_steps=10000 \
+  --num_train_steps=3000 \
   --learning_rate=2e-05 \
   --num_warmup_steps=1000 \
   --unsup_ratio=3 \
