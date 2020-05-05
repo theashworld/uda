@@ -12,11 +12,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-GS_DIR=gs://bewgle-data/UDA-tpu-py3
 gsutil -m rsync -r ./data/proc_data/ $GS_DIR/data/proc_data
 gsutil -o GSUtil:parallel_composite_upload_threshold=150M -m rsync -r ./pretrained_models $GS_DIR/pretrained_models
 python main.py \
-  --tpu_name=grpc://10.41.186.202:8470 \
+  --tpu_name=$TPU_NAME \
   --do_train=True \
   --do_eval=True \
   --sup_train_data_dir=$GS_DIR/data/proc_data/IMDB/train_20 \
