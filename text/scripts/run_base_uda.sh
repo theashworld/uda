@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 gsutil -m rsync -r ./data/proc_data/ $GS_DIR/data/proc_data
-gsutil -o GSUtil:parallel_composite_upload_threshold=150M -m rsync -r ./pretrained_models $GS_DIR/pretrained_models
+gsutil -o GSUtil:parallel_composite_upload_threshold=150M -m rsync -r ./pretrained_models gs://bewgle-data/pretrained_models
 python main.py \
   --tpu_name=$TPU_NAME \
   --do_train=True \
