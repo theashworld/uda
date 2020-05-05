@@ -21,9 +21,9 @@ python main.py \
   --sup_train_data_dir=$GS_DIR/data/proc_data/IMDB/train_20 \
   --unsup_data_dir=$GS_DIR/data/proc_data/IMDB/unsup \
   --eval_data_dir=$GS_DIR/data/proc_data/IMDB/dev \
-  --bert_config_file=$GS_DIR/pretrained_models/bert_base/bert_config.json \
-  --vocab_file=$GS_DIR/pretrained_models/bert_base/vocab.txt \
-  --init_checkpoint=$GS_DIR/pretrained_models/bert_base/bert_model.ckpt \
+  --bert_config_file=gs://bewgle-data/pretrained_models/bert_base/bert_config.json \
+  --vocab_file=gs://bewgle-data/pretrained_models/bert_base/vocab.txt \
+  --init_checkpoint=gs://bewgle-data/pretrained_models/bert_base/bert_model.ckpt \
   --task_name=IMDB \
   --model_dir=$GS_DIR/ckpt/base_uda \
   --num_train_steps=3000 \
