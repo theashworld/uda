@@ -88,6 +88,8 @@ def back_translation(examples, aug_ops, sub_set, aug_copy_num,
   for i in range(len(paraphrases)):
     paraphrases[i] = paraphrases[i].strip()
   
+  tf.logging.info("paraphrases {:d} data {:d}".format(
+      len(paraphrases), data_total_size))
   assert len(paraphrases) == data_total_size
 
   paraphrases = paraphrases[start * text_per_example : end * text_per_example]
@@ -119,11 +121,15 @@ def back_translation(examples, aug_ops, sub_set, aug_copy_num,
         text_b=text_b,
         label=ori_example.label)
     aug_examples += [example]
-    if six.PY2 and np.random.random() < 0.0001:
-      tf.logging.info("\tori:\n\t\t{:s}\n\t\t{:s}\n\t\t{:s}\n".format(
-          ori_example.text_a, ori_example.text_b, ori_example.label))
-      tf.logging.info("\tnew:\n\t\t{:s}\n\t\t{:s}\n\t\t{:s}\n".format(
-          example.text_a, example.text_b, example.label))
+    if np.random.random() < 0.0001:
+      if six.PY2:
+        tf.logging.info("\tori:\n\t\t{:s}\n\t\t{:s}\n\t\t{:s}\n".format(
+            ori_example.text_a, ori_example.text_b, ori_example.label))
+        tf.logging.info("\tnew:\n\t\t{:s}\n\t\t{:s}\n\t\t{:s}\n".format(
+            example.text_a, example.text_b, example.label))
+      else:
+        tf.logging.info("\tori:\n\t\t{ori_example.text_a}\n\t\t{ori_example.text_b}\n\t\t{ori_example.label}\n")
+        tf.logging.info("\tnew:\n\t\t{example.text_a}\n\t\t{example.text_b}\n\t\t{example.label}\n")
     if i % 10000 == 0:
       print("processing example # {:d}".format(i))
   tf.logging.info("applied back translation for {:.1f} percent of data".format(

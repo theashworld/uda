@@ -146,9 +146,9 @@ class IMDbProcessor(DataProcessor):
       if skip_unsup and line[1] == "unsup":
         continue
       # NOTE: Effectively disabling this
-      if line[1] == "unsup" and len(line[0]) < 5:
+      #if line[1] == "unsup" and len(line[0]) < 5:
         # tf.logging.info("skipping short samples:{:s}".format(line[0]))
-        continue
+      #  continue
       guid = "%s-%s" % (set_type, line[2])
       text_a = line[0]
       label = line[1]
