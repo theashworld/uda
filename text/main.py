@@ -298,6 +298,9 @@ def main(_):
       # Check if we are making any progress at all, else bail
       if dev_result["global_step"] >= 3000 and (best_acc < 0.55):
           sys.exit(dev_result["global_step"])
+          # This does not seem to be working, use a file instead?
+          with tf.gfile.Open(FLAGS.model_dir + "/steps", "w") as ouf:
+              print(dev_result["global_step"], file=ouf)
 
     tf.logging.info("***** Final evaluation result *****")
     tf.logging.info("Best acc: {:.3f}\n\n".format(best_acc))
