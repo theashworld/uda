@@ -296,7 +296,7 @@ def main(_):
       best_acc = max(best_acc, dev_result["eval_classify_accuracy"])
       # Check if we are making any progress at all, else bail
       if eval_steps >= 3000 and (best_acc < 0.55):
-          return eval_steps
+          return dev_result["global_step"]
 
     tf.logging.info("***** Final evaluation result *****")
     tf.logging.info("Best acc: {:.3f}\n\n".format(best_acc))
