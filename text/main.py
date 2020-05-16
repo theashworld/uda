@@ -20,6 +20,7 @@ from __future__ import print_function
 
 import json
 import os
+import sys
 import tensorflow as tf
 
 import uda
@@ -296,7 +297,7 @@ def main(_):
       best_acc = max(best_acc, dev_result["eval_classify_accuracy"])
       # Check if we are making any progress at all, else bail
       if dev_result["global_step"] >= 3000 and (best_acc < 0.55):
-          return dev_result["global_step"]
+          sys.exit(dev_result["global_step"])
 
     tf.logging.info("***** Final evaluation result *****")
     tf.logging.info("Best acc: {:.3f}\n\n".format(best_acc))
