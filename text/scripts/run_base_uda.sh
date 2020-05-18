@@ -26,7 +26,7 @@ python main.py \
   --init_checkpoint=gs://bewgle-data/pretrained_models/bert_base/bert_model.ckpt \
   --task_name=IMDB \
   --model_dir=$GS_DIR/ckpt/base_uda \
-  --num_train_steps=3000 \
+  --num_train_steps=10000 \
   --learning_rate=2e-05 \
   --num_warmup_steps=1000 \
   --unsup_ratio=3 \
