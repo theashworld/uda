@@ -153,16 +153,33 @@ def get_data_stats(data_stats_dir, sub_set, sup_size, replicas, examples):
     tf.logging.info("dumped data stats to {:s}".format(data_stats_dir))
   return data_stats
 
-
+import concurrent.futures
+from datetime import datetime
 def tokenize_examples(examples, tokenizer):
   tf.logging.info("tokenizing examples")
-  for i in range(len(examples)):
-    examples[i].word_list_a = tokenizer.tokenize_to_word(examples[i].text_a)
-    if examples[i].text_b:
-      examples[i].word_list_b = tokenizer.tokenize_to_word(examples[i].text_b)
-    if i % 10000 == 0:
-      tf.logging.info("finished tokenizing example {:d}".format(i))
-  return examples
+  ORIG = False
+  startTime = datetime.now()
+  if ORIG:
+    for i in range(len(examples)):
+      examples[i].word_list_a = tokenizer.tokenize_to_word(examples[i].text_a)
+      if examples[i].text_b:
+        examples[i].word_list_b = tokenizer.tokenize_to_word(examples[i].text_b)
+      if i % 10000 == 0:
+        tf.logging.info("finished tokenizing example {:d}".format(i))
+    tf.logging.info("Time taken {:s}".format(str(datetime.now()-startTime)))
+    return examples
+  def tokenize(example):
+    example.word_list_a = tokenizer.tokenize_to_word(example.text_a)
+    if example.text_b:
+      example.word_list_b = tokenizer.tokenize_to_word(example.text_b)
+    return example
+
+  with concurrent.futures.ProcessPoolExecutor() as executor:
+    retval = executor.map(tokenize, examples, chunksize=32)
+    tf.logging.info("Time taken {:s}".format(str(datetime.now()-startTime)))
+    return retval
+    # for example, result in zip(examples, executor.map(tokenize, examples)):
+    #     print('%d is prime: %s' % (number, prime))
 
 
 def convert_examples_to_features(
